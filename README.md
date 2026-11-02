@@ -84,7 +84,7 @@ Server akan berjalan di `http://localhost:3000`.
 | `PUT` | `/api/games/:id` | Admin | Mengubah data game berdasarkan ID |
 | `DELETE` | `/api/games/:id` | Admin | Menghapus game berdasarkan ID |
 
-### 👥 Manajemen User (Admin Only)
+###  Manajemen User (Admin Only)
 | Method | Endpoint | Akses | Deskripsi |
 |---|---|---|---|
 | `GET` | `/api/users` | Admin | Mengambil seluruh data user |
