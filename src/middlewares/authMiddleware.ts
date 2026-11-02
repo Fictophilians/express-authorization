@@ -6,7 +6,7 @@ export function authMiddleware(req: any, res: Response, next: NextFunction) {
     const authHeader = req.headers.authorization
 
     if (!authHeader) {
-        return res.status(403).json({
+        return res.status(401).json({
             message: "Token invalid!"
         })
     }
@@ -20,6 +20,6 @@ export function authMiddleware(req: any, res: Response, next: NextFunction) {
 
         next()
     } catch (error) {
-        res.status(403).json({ message: 'Token invalid!' })
+        res.status(401).json({ message: 'Token invalid!' })
     }
 }
