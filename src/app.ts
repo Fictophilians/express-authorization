@@ -1,61 +1,65 @@
-import express, { type Express, type Request, type Response } from 'express'
-import pool from './db/index.ts'
-import jwt from "jsonwebtoken"
+import express, { type Express, type NextFunction, type Request, type Response } from 'express'
+import cors from 'cors'
+import multer from 'multer'
 import 'dotenv/config'
 import { authMiddleware } from './middlewares/authMiddleware.ts'
 import { adminMiddleware } from './middlewares/adminMiddleware.ts'
+import { uploadPhoto } from './middlewares/uploadMiddleware.ts'
+import { getGames, postGame, updateGame, deleteGame } from "./controllers/gamesController.ts"
+import { getUsers, deleteUsers} from "./controllers/userController.ts"
+import { login, register} from "./controllers/authController.ts"
+import { getProfile, uploadProfilePhoto } from "./controllers/profileController.ts"
 
 const app: Express  = express()
 const port          = process.env.port || 3000
 
+app.use(cors())
 app.use(express.json())
-
-// ini buat login
-app.post("/api/login", async (req: Request, res: Response) => {
-  if (!req.body.email || !req.body.password) {
-    return res.status(400).json({
-      message: "Email & Password are required!"
-    })
-  }
-
-  const [users]: any = await pool.execute("select * from users where email = ?", [req.body.email])
-
-  if (!users.length) {
-    return res.status(400).json({
-      message: "Login failed!"
-    })
-  }
-
-  if (users[0].password != req.body.password) {
-    return res.status(400).json({
-      message: "Login failed!"
-    })
-  }
-
-  const token = jwt.sign(users[0], process.env.JWT_SECRET || "super-secret", { expiresIn: "1h" })
-
-  res.status(200).json({
-    message : "Login success!",
-    token   : token
-  })
+app.use((req, res, next) => {
+  console.log(`[REQUEST] ${req.method} ${req.url}`)
+  next()
 })
 
-// ini buat liat semua user, minimal login dulu
-app.get("/api/users", authMiddleware, async (req: Request, res: Response) => {
-  const [users] = await pool.query("select * from users")
+// CRUD
+app.get("/api/games", authMiddleware, getGames)
+app.post("/api/games", authMiddleware,adminMiddleware, postGame)
+app.put("/api/games/:id", authMiddleware, adminMiddleware, updateGame)
+app.delete("/api/games/:id", authMiddleware, adminMiddleware, deleteGame)
 
-  res.status(200).json({
-    message : "Users fetched!",
-    data    : users
-  })
-})
+// buat register
+app.post("/api/register", register)
 
-// ini buat hapus user, harus admin
-app.delete("/api/users/:id", authMiddleware, async (req: Request, res: Response) => {
-  await pool.execute("delete from users where id = ?", [req.params.id])
+//  buat login
+app.post("/api/login", login)
 
-  res.status(200).json({
-    message: "User deleted!"
+// ini buat liat semua user, cuma admin
+app.get("/api/users", authMiddleware, adminMiddleware, getUsers)
+
+// ini buat hapus user, cuma admin yang bisa
+app.delete("/api/users/:id", authMiddleware, adminMiddleware, deleteUsers)
+
+// profile (foto profile)
+app.get("/api/profile", authMiddleware, getProfile)
+app.post("/api/profile/photo", authMiddleware, uploadPhoto, uploadProfilePhoto)
+
+// handle error upload (file kebesaran / bukan gambar)
+app.use((error: any, req: Request, res: Response, next: NextFunction) => {
+  if (error instanceof multer.MulterError) {
+    const message = error.code === "LIMIT_FILE_SIZE"
+      ? "Ukuran foto maksimal 2MB!"
+      : error.message
+
+    return res.status(400).json({ message })
+  }
+
+  if (error instanceof Error) {
+    return res.status(400).json({
+      message: error.message
+    })
+  }
+
+  res.status(500).json({
+    message: "Terjadi kesalahan server!"
   })
 })
 
