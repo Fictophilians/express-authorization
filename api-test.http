@@ -1,0 +1,42 @@
+@host = http://localhost:3000
+@email = tester@mail.com
+@password = rahasia123
+
+# isi pakai "token" dari response request no. 2 (login)
+@token = ISI_TOKEN_DISINI
+
+### 1. Register (lewati kalau udah punya akun)
+POST {{host}}/api/register
+Content-Type: application/json
+
+{
+  "username": "tester",
+  "email": "{{email}}",
+  "password": "{{password}}",
+  "role": "admin"
+}
+
+### 2. Login -> copy nilai "token" ke variabel @token di atas
+POST {{host}}/api/login
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}"
+}
+
+### 3. Lihat profile
+GET {{host}}/api/profile
+Authorization: Bearer {{token}}
+
+### 4. Upload foto profile (field namanya "photo", file harus ada di folder yang sama dengan file .http ini)
+POST {{host}}/api/profile/photo
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=----BatasUpload
+
+------BatasUpload
+Content-Disposition: form-data; name="photo"; filename="foto.png"
+Content-Type: image/png
+
+< ./foto.png
+------BatasUpload--
