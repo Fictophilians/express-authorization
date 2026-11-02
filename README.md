@@ -4,18 +4,7 @@ REST API backend untuk aplikasi GameHaven berbasis Express.js, TypeScript, MySQL
 
 ---
 
-## 🛠️ Tech Stack
-
-- **Runtime:** Node.js
-- **Framework:** Express.js (TypeScript via tsx)
-- **Database:** MySQL (mysql2/promise)
-- **Authentication:** JWT (jsonwebtoken) & bcrypt
-- **File Upload:** Multer (memory storage) & Cloudinary SDK
-- **Cross-Origin:** CORS
-
----
-
-## 🚀 Memulai Proyek
+##  Memulai Proyek
 
 ### 1. Install Dependensi
 ```bash
@@ -73,21 +62,21 @@ Server akan berjalan di `http://localhost:3000`.
 
 ---
 
-## 📡 Daftar Endpoint API
+##  Daftar Endpoint API
 
-### 🔐 Autentikasi
+### Autentikasi
 | Method | Endpoint | Akses | Deskripsi |
 |---|---|---|---|
 | `POST` | `/api/register` | Publik | Mendaftarkan akun baru |
 | `POST` | `/api/login` | Publik | Login dan mendapatkan Bearer token |
 
-### 👤 Profile
+### Profile
 | Method | Endpoint | Akses | Deskripsi |
 |---|---|---|---|
 | `GET` | `/api/profile` | Authenticated | Mengambil data profil user yang login |
 | `POST` | `/api/profile/photo` | Authenticated | Upload foto profil ke Cloudinary (maks 2MB) |
 
-### 🎮 Katalog Game (CRUD)
+### Katalog Game (CRUD)
 | Method | Endpoint | Akses | Deskripsi |
 |---|---|---|---|
 | `GET` | `/api/games` | Authenticated | Mengambil daftar semua game |
@@ -100,8 +89,3 @@ Server akan berjalan di `http://localhost:3000`.
 |---|---|---|---|
 | `GET` | `/api/users` | Admin | Mengambil seluruh data user |
 | `DELETE` | `/api/users/:id` | Admin | Menghapus user berdasarkan ID |
-
----
-
-## 📄 Lisensi
-ISC
