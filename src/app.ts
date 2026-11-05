@@ -21,10 +21,10 @@ app.use((req, res, next) => {
 })
 
 // CRUD
-app.get("/api/games", authMiddleware, getGames)
-app.post("/api/games", authMiddleware,adminMiddleware, postGame)
-app.put("/api/games/:id", authMiddleware, adminMiddleware, updateGame)
-app.delete("/api/games/:id", authMiddleware, adminMiddleware, deleteGame)
+app.get("/api/games",  getGames)
+app.post("/api/games", adminMiddleware, postGame)
+app.put("/api/games/:id",  adminMiddleware, updateGame)
+app.delete("/api/games/:id" , adminMiddleware, deleteGame)
 
 // buat register
 app.post("/api/register", register)
