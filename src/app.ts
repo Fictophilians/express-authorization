@@ -22,9 +22,9 @@ app.use((req, res, next) => {
 
 // CRUD
 app.get("/api/games",  getGames)
-app.post("/api/games", adminMiddleware, postGame)
-app.put("/api/games/:id",  adminMiddleware, updateGame)
-app.delete("/api/games/:id" , adminMiddleware, deleteGame)
+app.post("/api/games",  postGame)
+app.put("/api/games/:id",  updateGame)
+app.delete("/api/games/:id" , deleteGame)
 
 // buat register
 app.post("/api/register", register)
